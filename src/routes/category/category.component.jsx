@@ -1,17 +1,17 @@
+import { gql, useQuery } from '@apollo/client';
 import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ProductCard from '../../components/product-card/product-card.component';
-
-import { gql, useQuery } from '@apollo/client';
 import Spinner from '../../components/spinner/spinner.component';
+
 import { CategoryContainer, Title } from './category.styles';
 
 const GET_CATEGORY = gql`
-  query ($title: String!) {
+  query ($title: String) {
     getCollectionsByTitle(title: $title) {
-      id
       title
+      id
       items {
         id
         name
@@ -22,17 +22,12 @@ const GET_CATEGORY = gql`
   }
 `;
 
-const SET_CATEGORY = gql``;
-
 const Category = () => {
   const { category } = useParams();
-  // const { categoriesMap, loading } = useContext(CategoriesContext);
-  const [products, setProducts] = useState([]);
-
   const { loading, error, data } = useQuery(GET_CATEGORY, {
     variables: { title: category },
   });
-  console.log('🚀 ~ data:', data);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     if (data) {
@@ -42,6 +37,7 @@ const Category = () => {
       setProducts(items);
     }
   }, [category, data]);
+
   return (
     <Fragment>
       {loading ? (
